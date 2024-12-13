@@ -1,8 +1,29 @@
+:root {
+  --primary-color: #f4a460;
+  --text-color: #333333;
+  --bg-color: #ffffff;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Cairo', sans-serif;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.5;
 }
 
 .app {
@@ -13,63 +34,160 @@
 
 .main {
   flex: 1;
-  max-width: 1440px;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem;
+}
+
+.container {
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.section-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .hero {
-  background: linear-gradient(rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
-  padding: 4rem 1rem;
-  text-align: center;
-  border-radius: 1rem;
-  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem 0;
+  background-color: var(--gray-100);
+  margin-bottom: 4rem;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+  padding-right: 2rem;
 }
 
 .hero h1 {
-  font-size: clamp(2rem, 5vw, 2.5rem);
-  color: #1f2937;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
   margin-bottom: 1rem;
+  color: var(--gray-900);
 }
 
 .hero p {
-  font-size: clamp(1rem, 3vw, 1.2rem);
-  color: #4b5563;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--gray-600);
   margin-bottom: 2rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .cta-button {
-  background-color: #2563eb;
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: var(--primary-color);
   color: white;
-  border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 0.5rem;
-  font-size: clamp(1rem, 2vw, 1.1rem);
-  cursor: pointer;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
   transition: background-color 0.3s ease;
 }
 
 .cta-button:hover {
-  background-color: #1d4ed8;
+  background-color: #e5955c;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--gray-900);
+}
+
+.card-text {
+  color: var(--gray-600);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #e5955c;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: white;
 }
 
 @media (max-width: 768px) {
-  .main {
-    padding: 0 0.5rem;
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 0;
   }
 
-  .hero {
-    padding: 2rem 1rem;
-    margin: 1rem 0;
+  .hero-content {
+    padding-right: 0;
+    margin-bottom: 2rem;
   }
 }
 
-@media (max-width: 480px) {
-  .hero {
-    padding: 1.5rem 1rem;
-  }
-} 
+/* Utility Classes */
+.text-center { text-align: center; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; } 
