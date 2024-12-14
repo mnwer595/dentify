@@ -1,21 +1,28 @@
 .categories {
-  padding: 4rem 2rem;
+  width: 100%;
+  padding: 4rem 0;
   background: var(--bg-color);
+}
+
+.categories-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .categories h2 {
   text-align: center;
   margin-bottom: 3rem;
   color: var(--gray-900);
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
 }
 
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .category-card {
@@ -27,6 +34,7 @@
   transition: transform 0.3s ease;
   cursor: pointer;
   min-height: 300px;
+  width: 100%;
 }
 
 .category-card:hover {
@@ -51,15 +59,16 @@
 .category-content {
   padding: 2rem;
   color: white;
+  width: 100%;
 }
 
 .category-content h3 {
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
   margin-bottom: 1rem;
 }
 
 .category-content p {
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
   opacity: 0.9;
 }
 
@@ -68,6 +77,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .stages div {
@@ -81,17 +91,50 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .categories {
-    padding: 2rem 1rem;
+    padding: 3rem 0;
   }
 
-  .categories h2 {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
+  .categories-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .categories {
+    padding: 2rem 0;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
   }
 
   .category-card {
     min-height: 250px;
+  }
+
+  .category-content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories {
+    padding: 1.5rem 0;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .category-card {
+    min-height: 200px;
+  }
+
+  .category-content {
+    padding: 1.25rem;
   }
 } 

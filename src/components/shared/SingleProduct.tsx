@@ -69,11 +69,11 @@ const SingleProduct = ({ product, onAddToCart }: SingleProductProps) => {
             target.src = 'https://via.placeholder.com/300x300?text=Dental+Product';
           }}
         />
-        <div className="product-overlay">
-          <Link to={`/shop/product/${product.id}`} className="quick-view-btn">
+        <Link to={`/shop/product/${product.id}`} className="product-overlay">
+          <span className="quick-view-btn">
             Quick View
-          </Link>
-        </div>
+          </span>
+        </Link>
       </div>
 
       <div className="product-info">

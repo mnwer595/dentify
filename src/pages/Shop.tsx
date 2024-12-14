@@ -22,7 +22,7 @@ const Shop = () => {
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [selectedStage, setSelectedStage] = useState(searchParams.get('stage') || '');
   const [minPrice, setMinPrice] = useState('');
@@ -35,8 +35,10 @@ const Shop = () => {
   useEffect(() => {
     const category = searchParams.get('category');
     const stage = searchParams.get('stage');
+    const search = searchParams.get('search');
     if (category) setSelectedCategory(category);
     if (stage) setSelectedStage(stage);
+    if (search) setSearchTerm(search);
   }, [searchParams]);
 
   useEffect(() => {
@@ -59,8 +61,10 @@ const Shop = () => {
   }, []);
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = searchTerm ? (
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    ) : true;
     const matchesCategory = !selectedCategory || product.category === selectedCategory;
     const matchesStage = !selectedStage || product.stage === selectedStage;
     const matchesPrice = (!minPrice || product.price >= Number(minPrice)) &&

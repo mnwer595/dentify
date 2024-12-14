@@ -1,58 +1,57 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
 import '../../styles/Header.css'
 
 const Header = () => {
-  const [showUniversitySubmenu, setShowUniversitySubmenu] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
   const { currentUser, signOut } = useAuth()
   const { getItemsCount } = useCart()
   const navigate = useNavigate()
+  const menuRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const searchRef = useRef<HTMLDivElement>(null)
 
-  const universityCategories = [
-    {
-      name: 'First Year',
-      subcategories: [
-        { name: 'Dental Anatomy', link: '/shop?category=university&stage=first&sub=anatomy' },
-        { name: 'Histology', link: '/shop?category=university&stage=first&sub=histology' },
-        { name: 'Physiology', link: '/shop?category=university&stage=first&sub=physiology' }
-      ]
-    },
-    {
-      name: 'Second Year',
-      subcategories: [
-        { name: 'Microbiology', link: '/shop?category=university&stage=second&sub=microbiology' },
-        { name: 'Pathology', link: '/shop?category=university&stage=second&sub=pathology' },
-        { name: 'Pharmacology', link: '/shop?category=university&stage=second&sub=pharmacology' }
-      ]
-    },
-    {
-      name: 'Third Year',
-      subcategories: [
-        { name: 'Conservative', link: '/shop?category=university&stage=third&sub=conservative' },
-        { name: 'Prosthodontics', link: '/shop?category=university&stage=third&sub=prosthodontics' },
-        { name: 'Surgery', link: '/shop?category=university&stage=third&sub=surgery' }
-      ]
-    },
-    {
-      name: 'Fourth Year',
-      subcategories: [
-        { name: 'Endodontics', link: '/shop?category=university&stage=fourth&sub=endodontics' },
-        { name: 'Orthodontics', link: '/shop?category=university&stage=fourth&sub=orthodontics' },
-        { name: 'Periodontics', link: '/shop?category=university&stage=fourth&sub=periodontics' }
-      ]
-    },
-    {
-      name: 'Fifth Year',
-      subcategories: [
-        { name: 'Implantology', link: '/shop?category=university&stage=fifth&sub=implantology' },
-        { name: 'Pediatric Dentistry', link: '/shop?category=university&stage=fifth&sub=pediatric' },
-        { name: 'Oral Medicine', link: '/shop?category=university&stage=fifth&sub=oral-medicine' }
-      ]
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMenuOpen && 
+          menuRef.current && 
+          buttonRef.current && 
+          !menuRef.current.contains(event.target as Node) && 
+          !buttonRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false)
+      }
+
+      if (isSearchOpen &&
+          searchRef.current &&
+          !searchRef.current.contains(event.target as Node)) {
+        setIsSearchOpen(false)
+      }
     }
-  ];
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false)
+        setIsSearchOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEscape)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isMenuOpen, isSearchOpen])
+
+  useEffect(() => {
+    if (window.innerWidth > 768) {
+      setIsMenuOpen(false)
+    }
+  }, [])
 
   const handleSignOut = async () => {
     try {
@@ -63,21 +62,21 @@ const Header = () => {
     }
   }
 
+  const handleNavClick = () => {
+    setIsMenuOpen(false)
+  }
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchTerm.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchTerm.trim())}`)
+      setIsSearchOpen(false)
+      setSearchTerm('')
+    }
+  }
+
   return (
     <header className="header">
-      <div className="header-top">
-        <div className="header-top-content">
-          <div className="contact-info">
-            <a href="tel:+1234567890"><i className="fas fa-phone"></i> +1234567890</a>
-            <a href="mailto:info@dentify.com"><i className="fas fa-envelope"></i> info@dentify.com</a>
-          </div>
-          <div className="social-links">
-            <a href="#"><i className="fab fa-facebook"></i></a>
-            <a href="#"><i className="fab fa-instagram"></i></a>
-            <a href="#"><i className="fab fa-twitter"></i></a>
-          </div>
-        </div>
-      </div>
       <div className="header-main">
         <div className="header-main-content">
           <Link to="/" className="logo">
@@ -85,64 +84,88 @@ const Header = () => {
             <span>Dental Supplies</span>
           </Link>
           <button 
+            ref={buttonRef}
             className="mobile-menu-button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-expanded={isMenuOpen}
           >
             <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
           </button>
-          <nav className={`nav ${isMenuOpen ? 'active' : ''}`}>
-            <Link to="/" className="nav-link">Home</Link>
-            <div 
-              className="dropdown"
-              onMouseEnter={() => setShowUniversitySubmenu(true)}
-              onMouseLeave={() => setShowUniversitySubmenu(false)}
-            >
-              <Link to="/shop?category=university" className="nav-link">University</Link>
-              {showUniversitySubmenu && (
-                <div className="submenu">
-                  {universityCategories.map((year, index) => (
-                    <div key={index} className="submenu-group">
-                      <div className="submenu-title">{year.name}</div>
-                      <div className="submenu-items">
-                        {year.subcategories.map((sub, subIndex) => (
-                          <Link 
-                            key={subIndex}
-                            to={sub.link}
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {sub.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <Link to="/shop?category=clinic" className="nav-link">Clinic</Link>
-            <Link to="/shop?category=disposable" className="nav-link">Disposable</Link>
-            <Link to="/shop" className="nav-link">Shop</Link>
-            {currentUser && <Link to="/orders" className="nav-link">My Orders</Link>}
+          <div className={`overlay ${isMenuOpen ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}></div>
+          <nav ref={menuRef} className={`nav ${isMenuOpen ? 'active' : ''}`}>
+            <Link to="/" className="nav-link" onClick={handleNavClick}>Home</Link>
+            <Link to="/shop?category=university" className="nav-link" onClick={handleNavClick}>University</Link>
+            <Link to="/shop?category=clinic" className="nav-link" onClick={handleNavClick}>Clinic</Link>
+            <Link to="/shop?category=disposable" className="nav-link" onClick={handleNavClick}>Disposable</Link>
+            <Link to="/shop" className="nav-link" onClick={handleNavClick}>Shop</Link>
+            {currentUser && <Link to="/orders" className="nav-link" onClick={handleNavClick}>My Orders</Link>}
+            {currentUser ? (
+              <button className="nav-link sign-out-btn" onClick={handleSignOut}>
+                <i className="fas fa-sign-out-alt"></i>
+                Sign Out
+              </button>
+            ) : (
+              <Link to="/signin" className="nav-link sign-in-btn" onClick={handleNavClick}>
+                <i className="fas fa-sign-in-alt"></i>
+                Sign In
+              </Link>
+            )}
           </nav>
-          <div className="header-actions">
-            <button className="search-btn">
-              <i className="fas fa-search"></i>
+          <div ref={searchRef} className="search-container">
+            <div className="search-form desktop-search">
+              <form onSubmit={handleSearch}>
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button type="submit" aria-label="Search">
+                  <i className="fas fa-search"></i>
+                </button>
+              </form>
+            </div>
+            <button 
+              className="search-btn"
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              aria-label="Toggle search"
+            >
+              <i className={`fas ${isSearchOpen ? 'fa-times' : 'fa-search'}`}></i>
             </button>
+            {isSearchOpen && (
+              <div className="search-form mobile-search">
+                <form onSubmit={handleSearch}>
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    autoFocus
+                  />
+                  <button type="submit" aria-label="Search">
+                    <i className="fas fa-search"></i>
+                  </button>
+                  <button 
+                    type="button" 
+                    className="close-search"
+                    onClick={() => setIsSearchOpen(false)}
+                    aria-label="Close search"
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+          <div className="header-actions">
             <Link to="/cart" className="cart">
               <i className="fas fa-shopping-cart"></i>
               {getItemsCount() > 0 && (
                 <span className="cart-count">{getItemsCount()}</span>
               )}
             </Link>
-            {currentUser ? (
-              <div className="auth-actions">
-                <span className="user-name">Hello, {currentUser.displayName}</span>
-                <button className="auth-btn" onClick={handleSignOut}>
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <Link to="/signin" className="auth-btn">
+            {!currentUser && (
+              <Link to="/signin" className="auth-btn desktop-only">
                 Sign In
               </Link>
             )}

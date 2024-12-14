@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import '../styles/Orders.css';
 
@@ -43,8 +43,6 @@ export default function Orders() {
         const q = query(
           ordersRef,
           where('userId', '==', currentUser.uid)
-          // Temporarily remove orderBy until index is created
-          // orderBy('createdAt', 'desc')
         );
         
         const querySnapshot = await getDocs(q);
@@ -66,9 +64,9 @@ export default function Orders() {
         console.log('Processed orders:', fetchedOrders);
         setOrders(fetchedOrders);
         setError(null);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Error fetching orders:', error);
-        if (error.message?.includes('requires an index')) {
+        if ((error as { message?: string }).message?.includes('requires an index')) {
           setError('The system is being initialized. Please wait a few minutes and refresh the page.');
         } else {
           setError('Failed to load orders. Please try again later.');

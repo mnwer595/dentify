@@ -1,0 +1,12 @@
+specVersion: "v1beta"
+serviceId: "dentify"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "dentify-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]

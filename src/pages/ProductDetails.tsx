@@ -59,8 +59,7 @@ const ProductDetails = () => {
         id: product.id,
         name: product.name,
         price: product.discountPrice || product.price,
-        imageUrl: product.imageUrl,
-        quantity: quantity
+        imageUrl: product.imageUrl
       });
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -81,8 +80,9 @@ const ProductDetails = () => {
 
   return (
     <div className="product-details-container">
-      <button className="back-button" onClick={() => navigate('/shop')}>
-        ← Back to Shop
+      <button className="back-button" onClick={() => navigate(-1)}>
+        <i className="fas fa-arrow-left"></i>
+        Back
       </button>
       
       <div className="product-details">
@@ -92,12 +92,12 @@ const ProductDetails = () => {
             alt={product.name}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = 'https://via.placeholder.com/300x300?text=Dental+Product';
+              target.src = '/placeholder-product.jpg';
             }}
           />
           {discount > 0 && (
             <div className="discount-badge">
-              {discount}% OFF
+              -{discount}%
             </div>
           )}
         </div>
@@ -106,11 +106,20 @@ const ProductDetails = () => {
           <h1>{product.name}</h1>
           
           <div className="product-meta">
-            <span className="category">Category: {product.category}</span>
-            {product.stage && <span className="stage">Stage: {product.stage}</span>}
+            <span>
+              <i className="fas fa-tag"></i>
+              {product.category}
+            </span>
+            {product.stage && (
+              <span>
+                <i className="fas fa-graduation-cap"></i>
+                {product.stage}
+              </span>
+            )}
             {product.rating && (
-              <span className="rating">
-                Rating: {product.rating} ★
+              <span>
+                <i className="fas fa-star"></i>
+                {product.rating}
               </span>
             )}
           </div>
@@ -120,9 +129,7 @@ const ProductDetails = () => {
               <>
                 <span className="original-price">${product.price.toFixed(2)}</span>
                 <span className="discount-price">${product.discountPrice.toFixed(2)}</span>
-                <span className="savings">
-                  Save ${(product.price - product.discountPrice).toFixed(2)}
-                </span>
+                <span className="savings">Save ${(product.price - product.discountPrice).toFixed(2)}</span>
               </>
             ) : (
               <span className="price">${product.price.toFixed(2)}</span>
@@ -136,16 +143,18 @@ const ProductDetails = () => {
               <button 
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
                 disabled={quantity <= 1}
-                className="quantity-btn minus"
+                className="quantity-btn"
+                aria-label="Decrease quantity"
               >
-                -
+                <i className="fas fa-minus"></i>
               </button>
               <span>{quantity}</span>
               <button 
                 onClick={() => setQuantity(q => q + 1)}
-                className="quantity-btn plus"
+                className="quantity-btn"
+                aria-label="Increase quantity"
               >
-                +
+                <i className="fas fa-plus"></i>
               </button>
             </div>
 
@@ -153,6 +162,7 @@ const ProductDetails = () => {
               className="add-to-cart"
               onClick={handleAddToCart}
             >
+              <i className="fas fa-shopping-cart"></i>
               Add to Cart
             </button>
           </div>

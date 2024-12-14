@@ -54,6 +54,16 @@ const SpecialOffers = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => 
@@ -130,16 +140,23 @@ const SpecialOffers = () => {
           </div>
           <div 
             className="offer-image"
-            style={{ backgroundImage: `url(${currentOffer.imageUrl})` }}
+            style={{ 
+              backgroundImage: `url(${currentOffer.imageUrl})`,
+              backgroundPosition: isMobile ? 'center' : 'right center'
+            }}
           />
         </div>
 
-        <button className="nav-button prev" onClick={prevSlide}>
-          <i className="fas fa-chevron-left"></i>
-        </button>
-        <button className="nav-button next" onClick={nextSlide}>
-          <i className="fas fa-chevron-right"></i>
-        </button>
+        {!isMobile && (
+          <>
+            <button className="nav-button prev" onClick={prevSlide}>
+              <i className="fas fa-chevron-left"></i>
+            </button>
+            <button className="nav-button next" onClick={nextSlide}>
+              <i className="fas fa-chevron-right"></i>
+            </button>
+          </>
+        )}
 
         <div className="offer-dots">
           {offers.map((_, index) => (
